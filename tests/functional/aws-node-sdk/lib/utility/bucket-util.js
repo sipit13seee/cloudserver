@@ -62,6 +62,7 @@ class BucketUtility {
             Bucket: bucketName,
         };
 
+        console.log('Listing object versions async');
         return this.s3
             .listObjectVersionsAsync(param)
             .then(data =>
@@ -69,36 +70,40 @@ class BucketUtility {
                     data.Versions
                         .filter(object => !object.Key.endsWith('/'))
                         // remove all objects
-                        .map(object =>
-                            this.s3.deleteObjectAsync({
+                        .map(object => {
+                            console.log('Deleting Object async');
+                            return this.s3.deleteObjectAsync({
                                 Bucket: bucketName,
                                 Key: object.Key,
                                 VersionId: object.VersionId,
                             })
-                              .then(() => object)
-                        )
+                              .then(() => object);
+                        })
                         .concat(data.Versions
                             .filter(object => object.Key.endsWith('/'))
                             // remove all directories
-                            .map(object =>
-                                this.s3.deleteObjectAsync({
+                            .map(object => {
+                                console.log('Deleting more objects async');
+                                return this.s3.deleteObjectAsync({
                                     Bucket: bucketName,
                                     Key: object.Key,
                                     VersionId: object.VersionId,
                                 })
-                                .then(() => object)
-                            )
+                                .then(() => object);
+                            })
                         )
                         .concat(data.DeleteMarkers
-                            .map(object =>
-                                 this.s3.deleteObjectAsync({
+                            .map(object => {
+                                console.log('deleting markers');
+                                 return this.s3.deleteObjectAsync({
                                      Bucket: bucketName,
                                      Key: object.Key,
                                      VersionId: object.VersionId,
                                  })
-                                 .then(() => object)))
+                                 .then(() => object);
+                                }))
                 )
-            );
+            ).catch(err => console.log(`ERROR EMPTYING BUCKET: ${err}`));
     }
 
     getOwner() {

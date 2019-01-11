@@ -108,7 +108,7 @@ callback) {
 
 describeSkipIfNotMultiple('MultipleBackend object copy: AWS',
 function testSuite() {
-    this.timeout(300000);
+    this.timeout(250000);
     withV4(sigCfg => {
         beforeEach(() => {
             bucketUtil = new BucketUtility('default', sigCfg);
