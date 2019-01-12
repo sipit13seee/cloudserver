@@ -112,7 +112,7 @@ destBucket, destLoc, azureKey, mdDirective, objSize, callback) {
     });
 }
 
-describeSkipIfNotMultipleOrCeph.only('MultipleBackend object copy: Azure',
+describeSkipIfNotMultipleOrCeph('MultipleBackend object copy: Azure',
 function testSuite() {
     this.timeout(250000);
     withV4(sigCfg => {
